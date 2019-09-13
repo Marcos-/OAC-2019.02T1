@@ -98,9 +98,178 @@ menu:	print_string(str)	#imprime as opcoes do menu
 		j menu
 
 	convert_negative:
+		load_image1:
+			# define parametros e chama a funcao para carregar a imagem
+			la a0, image_name
+			lw a1, address
+			la a2, buffer
+			lw a3, size
+			jal load_pixels1
+
+			#definicao da chamada de sistema para encerrar programa
+			#parametros da chamada de sistema: a7=10
+			li a7, 10
+			ecall
+
+			#-------------------------------------------------------------------------
+			# Funcao load_pixels: carrega uma imagem em formato RAW RGB para memoria
+			# Formato RAW: sequencia de pixels no formato RGB, 8 bits por componente
+			# de cor, R o byte mais significativo
+			#
+			# Parametros:
+			#  a0: endereco do string ".asciz" com o nome do arquivo com a imagem
+			#  a1: endereco de memoria para onde a imagem sera carregada
+			#  a2: endereco de uma palavra na memoria para utilizar como buffer
+			#  a3: tamanho da imagem em pixels
+			#
+			# A funcao foi implementada ... (explicacao da funcao)
+
+			load_pixels1:
+				# salva os parametros da funcao nos temporarios
+				mv t0, a0		# nome do arquivo
+				mv t1, a1		# endereco de carga
+				mv t2, a2		# buffer para leitura de um pixel do arquivo
+
+				# chamada de sistema para abertura de arquivo
+				#parametros da chamada de sistema: a7=1024, a0=string com o diretorio da imagem, a1 = definicao de leitura/escrita
+				li a7, 1024		# chamada de sistema para abertura de arquivo
+				li a1, 0		# Abre arquivo para leitura (pode ser 0: leitura, 1: escrita)
+				ecall			# Abre um arquivo (descritor do arquivo retornado em a0)
+				mv s6, a0		# salva o descritor do arquivo em s6
+
+				mv a0, s6		# descritor do arquivo
+				mv a1, t2		# endereco do buffer
+				li a2, 3		# largura do buffer
+
+			#loop utilizado para ler pixel a pixel da imagem
+			loop1:
+
+				beq a3, zero, close1		#verifica se o contador de pixels da imagem chegou a 0
+
+				#chamada de sistema para leitura de arquivo
+				#parametros da chamada de sistema: a7=63, a0=descritor do arquivo, a1 = endereco do buffer, a2 = maximo tamanho pra ler
+				li a7, 63				# definicao da chamada de sistema para leitura de arquivo
+				ecall            		# le o arquivo
+				lw   t4, 0(a1)   		# le pixel do buffer
+				srli t5, t4, 16
+				slli t5, t5, 16
+				srli t2, t4, 8
+				slli t2, t2, 24
+				srli t2, t2, 16
+				slli t3, t4, 24
+				srli t3, t3, 24
+				addi t6, zero, 255
+
+				sub t2, t6, t2
+				sub t3, t6, t3
+				sub t5, t6, t5
+
+
+				srli t5, t5, 16
+				slli t5, t5, 16
+				srli t2, t2, 8
+				slli t2, t2, 24
+				srli t2, t2, 16
+				slli t3, t3, 24
+				srli t3, t3, 24
+
+				addi t4, zero, 0
+				or t4, t4, t2
+				or t4, t4, t3
+				or t4, t4, t5
+
+				sw   t4, 0(t1)   		# escreve pixel no display
+				addi t1, t1, 4  		# proximo pixel
+				addi a3, a3, -1  		# decrementa countador de pixels da imagem
+
+				j loop1
+
+			# fecha o arquivo
+			close1:
+				# chamada de sistema para fechamento do arquivo
+				#parametros da chamada de sistema: a7=57, a0=descritor do arquivo
+				li a7, 57		# chamada de sistema para fechamento do arquivo
+				mv a0, s6		# descritor do arquivo a ser fechado
+				ecall           # fecha arquivo
+
+
+			j menu
+
 		print_string(strop5)
 		j menu
 	convert_redtones:
+		load_image2:
+			# define parametros e chama a funcao para carregar a imagem
+			la a0, image_name
+			lw a1, address
+			la a2, buffer
+			lw a3, size
+			jal load_pixels2
+
+			#definicao da chamada de sistema para encerrar programa
+			#parametros da chamada de sistema: a7=10
+			li a7, 10
+			ecall
+
+			#-------------------------------------------------------------------------
+			# Funcao load_pixels: carrega uma imagem em formato RAW RGB para memoria
+			# Formato RAW: sequencia de pixels no formato RGB, 8 bits por componente
+			# de cor, R o byte mais significativo
+			#
+			# Parametros:
+			#  a0: endereco do string ".asciz" com o nome do arquivo com a imagem
+			#  a1: endereco de memoria para onde a imagem sera carregada
+			#  a2: endereco de uma palavra na memoria para utilizar como buffer
+			#  a3: tamanho da imagem em pixels
+			#
+			# A funcao foi implementada ... (explicacao da funcao)
+
+			load_pixels2:
+				# salva os parametros da funcao nos temporarios
+				mv t0, a0		# nome do arquivo
+				mv t1, a1		# endereco de carga
+				mv t2, a2		# buffer para leitura de um pixel do arquivo
+
+				# chamada de sistema para abertura de arquivo
+				#parametros da chamada de sistema: a7=1024, a0=string com o diretorio da imagem, a1 = definicao de leitura/escrita
+				li a7, 1024		# chamada de sistema para abertura de arquivo
+				li a1, 0		# Abre arquivo para leitura (pode ser 0: leitura, 1: escrita)
+				ecall			# Abre um arquivo (descritor do arquivo retornado em a0)
+				mv s6, a0		# salva o descritor do arquivo em s6
+
+				mv a0, s6		# descritor do arquivo
+				mv a1, t2		# endereco do buffer
+				li a2, 3		# largura do buffer
+
+			#loop utilizado para ler pixel a pixel da imagem
+			loop2:
+
+				beq a3, zero, close2		#verifica se o contador de pixels da imagem chegou a 0
+
+				#chamada de sistema para leitura de arquivo
+				#parametros da chamada de sistema: a7=63, a0=descritor do arquivo, a1 = endereco do buffer, a2 = maximo tamanho pra ler
+				li a7, 63				# definicao da chamada de sistema para leitura de arquivo
+				ecall            		# le o arquivo
+				lw   t4, 0(a1)   		# le pixel do buffer
+				srli t4, t4, 16
+				slli t4, t4, 16
+				sw   t4, 0(t1)   		# escreve pixel no display
+				addi t1, t1, 4  		# proximo pixel
+				addi a3, a3, -1  		# decrementa countador de pixels da imagem
+
+				j loop2
+
+			# fecha o arquivo
+			close2:
+				# chamada de sistema para fechamento do arquivo
+				#parametros da chamada de sistema: a7=57, a0=descritor do arquivo
+				li a7, 57		# chamada de sistema para fechamento do arquivo
+				mv a0, s6		# descritor do arquivo a ser fechado
+				ecall           # fecha arquivo
+
+
+			j menu
+
 		print_string(strop6)
 		j menu
 
@@ -157,32 +326,6 @@ menu:	print_string(str)	#imprime as opcoes do menu
 			li a7, 63				# definicao da chamada de sistema para leitura de arquivo
 			ecall            		# le o arquivo
 			lw   t4, 0(a1)   		# le pixel do buffer
-			srli t5, t4, 16
-			slli t5, t5, 16
-			srli t2, t4, 8
-			slli t2, t2, 24
-			srli t2, t2, 16
-			slli t3, t4, 24
-			srli t3, t3, 24
-			addi t6, zero, 255
-
-			sub t2, t6, t2
-			sub t3, t6, t3
-			sub t5, t6, t5
-			
-
-			srli t5, t5, 16
-			slli t5, t5, 16
-			srli t2, t2, 8
-			slli t2, t2, 24
-			srli t2, t2, 16
-			slli t3, t3, 24
-			srli t3, t3, 24
-
-			addi t4, zero, 0
-			or t4, t4, t2
-			or t4, t4, t3
-			or t4, t4, t5
 
 			sw   t4, 0(t1)   		# escreve pixel no display
 			addi t1, t1, 4  		# proximo pixel
