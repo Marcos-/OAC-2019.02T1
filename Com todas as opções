@@ -65,7 +65,7 @@
 		ecall			
 	.end_macro 
 	
-	.macro entradaxy()
+	.macro entradaxy()	#Macro de entrada dos valores de X e Y
 		ent_x:	print_string(ent1)
 			print_string(x)
 			li a7, 5		#coloca x no registrador s1
@@ -83,62 +83,62 @@
 			blez s2, ent_y
 	.end_macro
 	
-	.macro entradaxy2()
+	.macro entradaxy2()	#Macro de entrada dos valores de Xi, Xf, Yi e Yf
 		ent_xi:	print_string(ent1)
 			print_string(xi)
 			li a7, 5		#coloca xi no registrador s1
 			ecall			
 			mv s1, a0
-			bge s1, a5, ent_xi
-			blez s1, ent_xi
+			bge s1, a5, ent_xi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s1, ent_xi		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_xf:	print_string(ent1)
 			print_string(xf)
 			li a7, 5		#coloca xf no registrador s2
 			ecall
 			mv s2, a0
-			bge s2, a5, ent_xf
-			blez s2, ent_xf
+			bge s2, a5, ent_xf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s2, ent_xf		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_yi:	print_string(yi)
 			li a7, 5		#coloca yi no registrador s3
 			ecall			
 			mv s3, a0
-			bge s3, a5, ent_yi
-			blez s3, ent_yi
+			bge s3, a5, ent_yi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s3, ent_yi		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_yf:	print_string(yf)
 			li a7, 5		#coloca yf no registrador s4
 			ecall
 			mv s4, a0
-			bge s4, a5, ent_yf
-			blez s4, ent_yf
+			bge s4, a5, ent_yf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s4, ent_yf		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 	.end_macro
 	
-	.macro entradargb()
+	.macro entradargb()	#Macro de entradas dos valores RGB
 		red: 	print_string(ent2)
 			print_string(valorR)
 			li a7, 5		#coloca o valor R no registrador s5
 			ecall			
 			mv s5, a0
-			bge s5, a6, red
-			blez s5, red
+			bge s5, a6, red		#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
+			blt s5, zero, red		
 		
 		blue:	print_string(ent2)
 			print_string(valorG)
 			li a7, 5		#coloca o valor G no registrador s6
 			ecall			
 			mv s6, a0
-			bge s6, a6, blue
-			blez s6, blue
+			bge s6, a6, blue	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
+			blt s6, zero, blue
 
 		green:	print_string(ent2)	
 			print_string(valorB)
 			li a7, 5		#coloca o valor B no registrador s7
 			ecall			
 			mv s7, a0
-			bge s7, a6, green
-			blez s7, green
+			bge s7, a6, green	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
+			blt s7, zero, green
 	.end_macro
 
 menu:	print_string(str)	#imprime as opcoes do menu
