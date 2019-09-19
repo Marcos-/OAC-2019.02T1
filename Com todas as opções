@@ -2,13 +2,13 @@
 #		OrganizaÃ§Ã£o e Arquitetura de Computadores - Turma C 
 #			Trabalho 1 - Assembly RISC-V
 #
-# Nome: 				Matricula: 
-# Nome: 				Matricula: 
-# Nome: 				Matricula: 
+# Nome: J�natas Gomes Barbosa da Silva	Matricula: 17/0059847
+# Nome: Tatiana Pereira			Matricula: 
+# Nome: Marcos				Matricula: 
 
 .data
 	#menu:
-		str:	.asciz "\n. Defina o numero opcao desejada: \n"	#declaração da string "str"
+		str:	.asciz "\n. Defina o numero da fun��o desejada: \n"	#declaração da string "str"
 		str2:	.asciz "	1. Obtem ponto\n"
 		str3: 	.asciz "	2. Desenha ponto\n"
 		str4: 	.asciz "	3. Desenha retangulo com preenchimento\n"
@@ -20,7 +20,10 @@
 		
 	#genericos:
 		X0Y0:   .word 0x10043F00
-		str0:	.asciz "Digite os dados conforme solicitado:"
+		ent1:	.asciz "Digite um valor de 0 a 63:"
+		ent2:	.asciz "Digite um valor de 0 a 255:"
+		x:	.asciz "X -> "
+		y:	.asciz "Y -> "
 		xi:	.asciz "\nXi -> "
 		yi:	.asciz "Yi -> "
 		xf:	.asciz "Xf -> "
@@ -47,6 +50,9 @@
 	
 
 .text
+#Defini��o dos limites
+	li a5, 64
+	li a6, 256
 
 # definicao de macros
 
@@ -55,9 +61,85 @@
 		#parâmetros: a0 -> endereço da string que se quer imprimir
 		#retorno: imprime uma string no console
 		li	a7, 4		#a7=4 -> definição da chamada de sistema para imprimir strings na tela
-		la	a0, $arg	#a0=endereço da string "str0"
+		la	a0, $arg	#a0=endereço da string "ent1"
 		ecall			
 	.end_macro 
+	
+	.macro entradaxy()
+		ent_x:	print_string(ent1)
+			print_string(x)
+			li a7, 5		#coloca x no registrador s1
+			ecall			
+			mv s1, a0
+			bge s1, a5, ent_x
+			blez s1, ent_x
+		
+		ent_y:	print_string(ent1)			
+			print_string(y)
+			li a7, 5		#coloca y no registrador s2
+			ecall			
+			mv s2, a0
+			bge s2, a5, ent_y
+			blez s2, ent_y
+	.end_macro
+	
+	.macro entradaxy2()
+		ent_xi:	print_string(ent1)
+			print_string(xi)
+			li a7, 5		#coloca xi no registrador s1
+			ecall			
+			mv s1, a0
+			bge s1, a5, ent_xi
+			blez s1, ent_xi
+			
+		ent_xf:	print_string(ent1)
+			print_string(xf)
+			li a7, 5		#coloca xf no registrador s2
+			ecall
+			mv s2, a0
+			bge s2, a5, ent_xf
+			blez s2, ent_xf
+			
+		ent_yi:	print_string(yi)
+			li a7, 5		#coloca yi no registrador s3
+			ecall			
+			mv s3, a0
+			bge s3, a5, ent_yi
+			blez s3, ent_yi
+			
+		ent_yf:	print_string(yf)
+			li a7, 5		#coloca yf no registrador s4
+			ecall
+			mv s4, a0
+			bge s4, a5, ent_yf
+			blez s4, ent_yf
+	.end_macro
+	
+	.macro entradargb()
+		red: 	print_string(ent2)
+			print_string(valorR)
+			li a7, 5		#coloca o valor R no registrador s5
+			ecall			
+			mv s5, a0
+			bge s5, a6, red
+			blez s5, red
+		
+		blue:	print_string(ent2)
+			print_string(valorG)
+			li a7, 5		#coloca o valor G no registrador s6
+			ecall			
+			mv s6, a0
+			bge s6, a6, blue
+			blez s6, blue
+
+		green:	print_string(ent2)	
+			print_string(valorB)
+			li a7, 5		#coloca o valor B no registrador s7
+			ecall			
+			mv s7, a0
+			bge s7, a6, green
+			blez s7, green
+	.end_macro
 
 menu:	print_string(str)	#imprime as opcoes do menu
 	print_string(str2)
@@ -95,15 +177,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 	
 	get_point: 
 		#recebe coordenadas de x e y
-			print_string(str0)
-			print_string(xi)
-			li a7, 5		#coloca x no registrador s1
-			ecall			
-			mv s1, a0
-			print_string(yi)
-			li a7, 5		#coloca y no registrador s2
-			ecall			
-			mv s2, a0
+			entradaxy()
 	
 		#coloca os valores auxiliares nos registradores
 			li t2, 1	#t2 = 1
@@ -156,15 +230,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 
 	draw_point: 
 		#recebe coordenadas de x e y
-			print_string(str0)
-			print_string(xi)
-			li a7, 5		#coloca x no registrador s1
-			ecall			
-			mv s1, a0
-			print_string(yi)
-			li a7, 5		#coloca y no registrador s2
-			ecall			
-			mv s2, a0
+			entradaxy()
 	
 		#coloca os valores auxiliares nos registradores
 			li t2, 1	#t2 = 1
@@ -188,20 +254,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 	
 		#altera a cor do ponto
 			#recebe os valores do usuario
-		corRGB: print_string(valorR)
-			li a7, 5		#coloca o valor R no registrador s5
-			ecall			
-			mv s5, a0
-		
-			print_string(valorG)
-			li a7, 5		#coloca o valor G no registrador s6
-			ecall			
-			mv s6, a0
-		
-			print_string(valorB)
-			li a7, 5		#coloca o valor B no registrador s7
-			ecall			
-			mv s7, a0
+		corRGB: entradargb()
 			
 			#soma os valores e move 8 bits pra direita, liberando espaço para o próximo valor
 			or t1, s0, s5
@@ -221,24 +274,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 		lw t5, X0Y0	#Posição (0,0)
 		
 		#recebe os dados de xi, yi, xf, yf e as cores em RGB
-			print_string(str0)
-			print_string(xi)
-			li a7, 5		#coloca xi no registrador s1
-			ecall			
-			mv s1, a0
-			print_string(xf)
-			li a7, 5		#coloca xf no registrador s2
-			ecall
-			mv s2, a0
-
-			print_string(yi)
-			li a7, 5		#coloca yi no registrador s3
-			ecall			
-			mv s3, a0
-			print_string(yf)
-			li a7, 5		#coloca yf no registrador s4
-			ecall
-			mv s4, a0
+			entradaxy2()
 			
 			#subtrai os valores a fim de achar a largura e a altura, caso necessário, pode ser alterado mais a frente
 			sub a1, s2, s1
@@ -269,20 +305,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 			sub t4, t4, s3
 			sub t2, t2, s3
 			
-			print_string(valorR)
-			li a7, 5		#coloca o valor R no registrador s5
-			ecall			
-			mv s5, a0
-		
-			print_string(valorG)
-			li a7, 5		#coloca o valor G no registrador s6
-			ecall			
-			mv s6, a0
-		
-			print_string(valorB)
-			li a7, 5		#coloca o valor B no registrador s7
-			ecall			
-			mv s7, a0
+			entradargb()
 			
 			or t1, s0, s5
 			slli t1, t1, 8
@@ -327,29 +350,12 @@ menu:	print_string(str)	#imprime as opcoes do menu
 	draw_empty_rectangle: 
 		lw t5, X0Y0	#Posição (0,0)
 		
-		print_string(str0)
-			print_string(xi)
-			li a7, 5		#coloca xi no registrador s1
-			ecall			
-			mv s1, a0
-			print_string(xf)
-			li a7, 5		#coloca xf no registrador s2
-			ecall
-			mv s2, a0
-
-			print_string(yi)
-			li a7, 5		#coloca yi no registrador s3
-			ecall			
-			mv s3, a0
-			print_string(yf)
-			li a7, 5		#coloca yf no registrador s4
-			ecall
-			mv s4, a0
+		entradaxy2()
 			
-			bgeu s2, s1, cont
-			mv t4, s1
-			mv s1, s2
-			mv s2, t4
+		bgeu s2, s1, cont
+		mv t4, s1
+		mv s1, s2
+		mv s2, t4
 			
 		cont:	bgeu s4, s3, cont2
 			mv t4, s3
@@ -365,20 +371,7 @@ menu:	print_string(str)	#imprime as opcoes do menu
 			sub t4, t4, s3
 			sub t2, t2, s3
 			
-			print_string(valorR)
-			li a7, 5		#coloca o valor R no registrador s5
-			ecall			
-			mv s5, a0
-		
-			print_string(valorG)
-			li a7, 5		#coloca o valor G no registrador s6
-			ecall			
-			mv s6, a0
-		
-			print_string(valorB)
-			li a7, 5		#coloca o valor B no registrador s7
-			ecall			
-			mv s7, a0
+			entradargb()
 			
 			or t1, s0, s5
 			slli t1, t1, 8
