@@ -340,82 +340,93 @@ draw_full_rectangle:
 		
 	j menu	#volta pro menu
 	
-draw_empty_rectangle: 
-	lw t5, X0Y0	#Posicao (0,0)
+draw_empty_rectangle:
+	#Determinação da posição (0,0)
+	lw t5, X0Y0
 		
+	#Entrada de dados
 	entradaxy2()
 			
-	bgeu s2, s1, cont
-	mv t4, s1
+	# Checa se a posição Xi é maior que Xf
+	bgeu s2, s1, cont	#Caso não seja, pula
+	mv t4, s1		#Variável auxiliar para troca de valores
 	mv s1, s2
 	mv s2, t4
-			
-	cont:	bgeu s4, s3, cont2
-		mv t4, s3
+	
+	#Checa se Yi é maior que Yf
+	cont:	bgeu s4, s3, cont2	#Caso não seja, pula
+		mv t4, s3		#Variável auxiliar para troca de valores
 		mv s3, s4
 		mv s4, t4
-		
-	cont2:	mv t4, s4
-		mv t2, s4
-		mv s8, s2
-		mv t3, s2
+	
+	#Conta a quantidade de pixels entre as variáveis X e as variáveis Y
+	#além de guardar cada um dos valores em dois registradores difernetes
+	cont2:	mv t4, s4		
+		mv s8, s2	
 		sub s8, s8, s1
-		sub t3, t3, s1
+		mv t3, s2
 		sub t4, t4, s3
-		sub t2, t2, s3
+		mv t2, t4
 			
-		entradargb()
+		entradargb()	#Entrada de dados RGB
 			
-		or t1, s0, s5
+		#Alocação dos dados RGB em T1 para futura impressão
+		or t1, s0, s5	
 		slli t1, t1, 8
 		or  t1, t1, s6
 		slli t1, t1, 8
 		or t1, t1, s7
 		
-	loopgy:	blez  s3, loopgx
+		#Achando endereço da posição (Xi, Yi)
+	loopgy:	blez  s3, loopgx	
 		addi t5, t5, -256
 		addi s3, s3, -1
 
 		j loopgy
-		 
+		
+		 #Achando endereço da posição (Xi, Yi)
 	loopgx:	blez s1, curso
 		addi t5, t5, 4 
 		addi s1, s1, -1
 		j  loopgx
-				
+	
+	#Loop para pintar todos os pixels de (Xi,Yi) até (Xf,Yi)
 	curso: 	li a2, 0   #cor em rgb
 		or a2, a2, t1
 		sw a2, 0(t5)
 		blez s8, curso2
-		addi s8, s8, -1
-		addi t5, t5, 4
+		addi s8, s8, -1		#Contador
+		addi t5, t5, 4		#identador
 			
 		j curso
 		
+	#Loop para pintar todos os pixels de (Xf,Yi) até (Xf,Yf)
 	curso2:	li a2, 0   #cor em rgb
 		or a2, a2, t1
 		sw a2, 0(t5)
 		blez t4, curso3
-		addi t4, t4, -1
-		addi t5, t5, -256
+		addi t4, t4, -1		#Contador
+		addi t5, t5, -256	#identador
 			
 		j curso2
-			
+	
+	#Loop para pintar todos os pixels de (Xf,Yf) até (Xi,Yf)
 	curso3: li a2, 0   #cor em rgb
 		or a2, a2, t1
 		sw a2, 0(t5)
 		blez t3, curso4
-		addi t3, t3, -1
-		addi t5, t5, -4
+		addi t3, t3, -1		#Contador
+		addi t5, t5, -4		#identador
 			
 		j curso3
-			
+	
+	#Loop para pintar todos os pixels de (Xi,Yf) até (Xi,Yi)
 	curso4:	li a2, 0   #cor em rgb
 		or a2, a2, t1
 		sw a2, 0(t5)
 		blez t2, fim
-		addi t2, t2, -1
-		addi t5, t5, 256
+		addi t2, t2, -1 	#Contador
+		addi t5, t5, 256	#identador
 			
 		j curso4
 	
