@@ -4,7 +4,7 @@
 #			Trabalho 1 - Assembly RISC-V
 #
 # Nome: Jônatas Gomes Barbosa da Silva	Matricula: 17/0059847
-# Nome: Marcos				Matricula: 
+# Nome: Marcos Vinicius Pereira Marques	Matricula: 14/0071989
 # Nome: Tatiana Franco Pereira		Matricula: 18/0131206
 
 .data
