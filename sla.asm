@@ -1,15 +1,15 @@
   
 #-------------------------------------------------------------------------
-#		OrganizaÃ§Ã£o e Arquitetura de Computadores - Turma C 
+#		OrganizaÃƒÂ§ÃƒÂ£o e Arquitetura de Computadores - Turma C 
 #			Trabalho 1 - Assembly RISC-V
 #
-# Nome: J�natas Gomes Barbosa da Silva	Matricula: 17/0059847
+# Nome: Jônatas Gomes Barbosa da Silva	Matricula: 17/0059847
 # Nome: Marcos				Matricula: 
 # Nome: Tatiana Franco Pereira		Matricula: 18/0131206
 
 .data
 #menu:
-	str:	.asciz "\n. Defina o numero da fun��o desejada: \n"	#declaracao da string "str"
+	str:	.asciz "\n. Defina o numero da função desejada: \n"	#declaracao da string "str"
 	str2:	.asciz "	1. Obtem ponto\n"
 	str3: 	.asciz "	2. Desenha ponto\n"
 	str4: 	.asciz "	3. Desenha retangulo com preenchimento\n"
@@ -21,17 +21,17 @@
 		
 #genericos:
 	X0Y0:   .word 0x10043F00
-	ent1:	.asciz "Digite um valor de 0 a 63:"
-	ent2:	.asciz "Digite um valor de 0 a 255:"
+	ent1:	.asciz "Digite um valor de 0 a 63:\n"
+	ent2:	.asciz "Digite um valor de 0 a 255:\n"
 	x:	.asciz "X -> "
 	y:	.asciz "Y -> "
-	xi:	.asciz "\nXi -> "
+	xi:	.asciz "Xi -> "
 	yi:	.asciz "Yi -> "
 	xf:	.asciz "Xf -> "
 	yf:	.asciz "Yf -> "	
-	valorR:	.asciz "\nValor de R: "
-	valorG: .asciz "\nValor de G: "
-	valorB: .asciz "\nValor de B: "
+	valorR:	.asciz "Valor de R: "
+	valorG: .asciz "Valor de G: "
+	valorB: .asciz "Valor de B: "
 		
 	
 #load_image:
@@ -41,7 +41,7 @@
 	size:		.word	4096		# numero de pixels da imagem
 
 .text
-#Defini��o dos limites
+#Definição dos limites
 	li a5, 64
 	li a6, 256
 
@@ -49,10 +49,10 @@
 
 	.macro print_string($arg)
 		#chamada de sistema para imprimir strings na tela
-		#parâmetros: a0 -> endereço da string que se quer imprimir
+		#parÃ¢metros: a0 -> endereÃ§o da string que se quer imprimir
 		#retorno: imprime uma string no console
-		li	a7, 4		#a7=4 -> definição da chamada de sistema para imprimir strings na tela
-		la	a0, $arg	#a0=endereço da string "ent1"
+		li	a7, 4		#a7=4 -> definiÃ§Ã£o da chamada de sistema para imprimir strings na tela
+		la	a0, $arg	#a0=endereÃ§o da string "ent1"
 		ecall			
 	.end_macro 
 	
@@ -80,30 +80,30 @@
 			li a7, 5		#coloca xi no registrador s1
 			ecall			
 			mv s1, a0
-			bge s1, a5, ent_xi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao in�cio da leitura.
-			blez s1, ent_xi		#Caso o valor seja igual ou menor que zero, ele tamb�m retorna ao in�cio da leitura.
+			bge s1, a5, ent_xi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s1, ent_xi		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_xf:	print_string(ent1)
 			print_string(xf)
 			li a7, 5		#coloca xf no registrador s2
 			ecall
 			mv s2, a0
-			bge s2, a5, ent_xf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao in�cio da leitura.
-			blez s2, ent_xf		#Caso o valor seja igual ou menor que zero, ele tamb�m retorna ao in�cio da leitura.
+			bge s2, a5, ent_xf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s2, ent_xf		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_yi:	print_string(yi)
 			li a7, 5		#coloca yi no registrador s3
 			ecall			
 			mv s3, a0
-			bge s3, a5, ent_yi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao in�cio da leitura.
-			blez s3, ent_yi		#Caso o valor seja igual ou menor que zero, ele tamb�m retorna ao in�cio da leitura.
+			bge s3, a5, ent_yi	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s3, ent_yi		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 			
 		ent_yf:	print_string(yf)
 			li a7, 5		#coloca yf no registrador s4
 			ecall
 			mv s4, a0
-			bge s4, a5, ent_yf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao in�cio da leitura.
-			blez s4, ent_yf		#Caso o valor seja igual ou menor que zero, ele tamb�m retorna ao in�cio da leitura.
+			bge s4, a5, ent_yf	#Caso o valor recebido seja maior ou igual a 64, ele retorna ao início da leitura.
+			blez s4, ent_yf		#Caso o valor seja igual ou menor que zero, ele também retorna ao início da leitura.
 	.end_macro
 	
 	.macro entradargb()	#Macro de entradas dos valores RGB
@@ -112,7 +112,7 @@
 			li a7, 5		#coloca o valor R no registrador s5
 			ecall			
 			mv s5, a0
-			bge s5, a6, red		#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao in�cio da leitura.
+			bge s5, a6, red		#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
 			blt s5, zero, red		
 		
 		blue:	print_string(ent2)
@@ -120,7 +120,7 @@
 			li a7, 5		#coloca o valor G no registrador s6
 			ecall			
 			mv s6, a0
-			bge s6, a6, blue	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao in�cio da leitura.
+			bge s6, a6, blue	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
 			blt s6, zero, blue
 
 		green:	print_string(ent2)	
@@ -128,7 +128,7 @@
 			li a7, 5		#coloca o valor B no registrador s7
 			ecall			
 			mv s7, a0
-			bge s7, a6, green	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao in�cio da leitura.
+			bge s7, a6, green	#Caso o valor recebido seja maior, igual a 256 ou menor que zero ele retorna ao início da leitura.
 			blt s7, zero, green
 	.end_macro
 
@@ -245,7 +245,7 @@ draw_point:
 		#recebe os valores do usuario
 		corRGB: entradargb()
 			
-		#soma os valores e move 8 bits pra direita, liberando espaço para o próximo valor
+		#soma os valores e move 8 bits pra direita, liberando espaÃ§o para o prÃ³ximo valor
 		or t1, s0, s5
 		slli t1, t1, 8
 		or  t1, t1, s6
@@ -269,9 +269,9 @@ draw_full_rectangle:
 		sub a1, s2, s1
 		sub a3, s4, s3
 			
-		#se s2=xf for maior q s1=xi, não troca e pula pra conferir os valores de y
+		#se s2=xf for maior q s1=xi, nÃ£o troca e pula pra conferir os valores de y
 		bgeu s2, s1, conti
-		#caso contrario troca e recalcula o valor da largura a fim de evitar números negativos
+		#caso contrario troca e recalcula o valor da largura a fim de evitar nÃºmeros negativos
 		sub a1, s1, s2
 		mv t4, s1
 		mv s1, s2
@@ -329,7 +329,7 @@ draw_full_rectangle:
 		addi a1, a1, -1
 		#se ainda n tiver zerado a flag de quantos pontos pintamos da largura, pinta o pixel do lado	
 		bgt a1, zero, colore2
-		#se j� tiver zerado, passa pra linha de cima	
+		#se já tiver zerado, passa pra linha de cima	
 		addi a3, a3, -1
 		addi t4, t4, -256
 			
@@ -429,7 +429,7 @@ convert_negative:
 		
 		beq a3, zero, endneg		#verifica se o contador de pixels da imagem chegou a 0
 	        
-		lw   t4, 0(s1)   		# lê pixel do display
+		lw   t4, 0(s1)   		# lÃª pixel do display
 		srli t5, t4, 16
 		slli t5, t5, 16
 		srli t2, t4, 8
